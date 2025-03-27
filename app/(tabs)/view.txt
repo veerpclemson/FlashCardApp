@@ -1,0 +1,70 @@
+import React, { useState } from 'react';
+import { Text, View, TouchableOpacity, StyleSheet, Button } from 'react-native';
+
+export default function AboutScreen() {
+  const [buttonCount, setButtonCount] = useState(3); // Start with 3 buttons
+  const [buttonPositions, setButtonPositions] = useState<number[]>([20]); // Start position for first button
+  const padding = 40; // Padding between buttons
+
+  // Function to update button positions dynamically
+  const handleLayout = (event: any, index: number) => {
+    const { width } = event.nativeEvent.layout;
+    // Update buttonPositions with the new position
+    setButtonPositions((prevPositions) => {
+      const newPositions = [...prevPositions];
+      const nextLeft = newPositions[index] + width + padding; // Position for next button
+      newPositions.push(nextLeft);
+      return newPositions;
+    });
+  };
+
+  // Function to change the number of buttons dynamically
+  const updateButtonCount = (count: number) => {
+    setButtonCount(count);
+    setButtonPositions([20]); // Reset the starting position for buttons
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Button to change the number of buttons dynamically */}
+      
+
+      {/* Render the buttons dynamically based on buttonCount */}
+      {Array.from({ length: buttonCount }).map((_, index) => (
+        <TouchableOpacity
+          key={index}
+          style={[styles.button, { left: buttonPositions[index] }]}
+          onPress={() => alert(`Button ${index + 1} Pressed!`)}
+        >
+          <Text
+            style={styles.buttonText}
+            onLayout={(event) => handleLayout(event, index)}
+          >
+            {`Test Set ${index + 1}`}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#25292e',
+    paddingTop: 20,
+  },
+  button: {
+    position: 'absolute',
+    width:400,
+    height:240,
+    top: 20,
+    backgroundColor: '#fff',
+    borderWidth: 5,
+    borderColor: '#000',
+    padding: 10,
+  },
+  buttonText: {
+    color: '#000',
+  },
+});
