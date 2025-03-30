@@ -1,3 +1,4 @@
+//blank page for creating cards
 import { Text, View, StyleSheet } from 'react-native';
 
 export default function AboutScreen() {

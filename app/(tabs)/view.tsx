@@ -1,3 +1,4 @@
+//view created sets
 import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, Button } from 'react-native';
 import { Link } from 'expo-router';

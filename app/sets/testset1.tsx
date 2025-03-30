@@ -1,3 +1,4 @@
+//blank page for testing link
 import { Text, View, StyleSheet } from 'react-native';
 
 export default function AboutScreen() {
