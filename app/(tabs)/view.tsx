@@ -27,7 +27,7 @@ export default function SetsScreen() {
     setError(null);
     try {
       console.log("Fetching flashcard sets...");
-      const res = await fetch(`http://localhost:8081/api/flashcards`, {
+      const res = await fetch(`http://localhost:8081/api/flashcards/route`, {
         method: "GET",
       });
 
@@ -41,8 +41,6 @@ export default function SetsScreen() {
       if (Array.isArray(data)) {
         setSets(data as FlashcardSet[]);  // This part ensures the correct type
       } else {
-        console.error("API did not return an array:", data);
-        setError("API response format is incorrect. Expected an array.");
         setSets([]);
       }
     } catch (error) {

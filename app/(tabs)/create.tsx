@@ -1,18 +1,27 @@
-import { useState } from 'react';
-import { Text, View, StyleSheet, TextInput, Button, Alert, FlatList, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import {
+  Alert,
+  Button,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function AboutScreen() {
-  const [front, setFront] = useState('');
-  const [back, setBack] = useState('');
-  const [setTitle, setSetTitle] = useState('');
+  const [front, setFront] = useState("");
+  const [back, setBack] = useState("");
+  const [setTitle, setSetTitle] = useState("");
   const [cards, setCards] = useState<{ front: string; back: string }[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const router = useRouter();
 
   const handleAddCard = () => {
     if (!front || !back) {
-      Alert.alert('Missing Info', 'Please fill both sides');
+      Alert.alert("Missing Info", "Please fill both sides");
       return;
     }
 
@@ -25,8 +34,8 @@ export default function AboutScreen() {
       setCards([...cards, { front, back }]);
     }
 
-    setFront('');
-    setBack('');
+    setFront("");
+    setBack("");
   };
 
   const handleEdit = (index: number) => {
@@ -40,15 +49,15 @@ export default function AboutScreen() {
     const updated = cards.filter((_, i) => i !== index);
     setCards(updated);
     if (editIndex === index) {
-      setFront('');
-      setBack('');
+      setFront("");
+      setBack("");
       setEditIndex(null);
     }
   };
 
   const handleCreateSet = async () => {
     if (!setTitle.trim()) {
-      Alert.alert('Missing Title', 'Please enter a name for your set.');
+      Alert.alert("Missing Title", "Please enter a name for your set.");
       return;
     }
 
@@ -58,33 +67,38 @@ export default function AboutScreen() {
     }
 
     if (allCards.length === 0) {
-      Alert.alert('Nothing to Save', 'Add at least one card before saving.');
+      Alert.alert("Nothing to Save", "Add at least one card before saving.");
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/flashcards', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: setTitle,
-          description: 'Created in app',
-          cards: allCards,
-        }),
-      });
+      console.log("saving card");
+      const response = await fetch(
+        "http://localhost:8081/api/flashcards/route",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: setTitle,
+            description: "Created in app",
+            cards: allCards,
+          }),
+        }
+      );
 
-      if (!response.ok) throw new Error('Failed to create flashcard set');
+      if (!response.ok) throw new Error("Failed to create flashcard set");
 
       const result = await response.json();
-      Alert.alert('Success', result.message);
+
+      console.log(result);
+
+      Alert.alert("Success", result.message);
       router.back(); // navigates back to the previous screen
-
-
     } catch (error) {
-      console.error('Error creating flashcard set:', error);
-      Alert.alert('Error', 'Something went wrong while creating the set.');
+      console.error("Error creating flashcard set:", error);
+      Alert.alert("Error", "Something went wrong while creating the set.");
     }
   };
 
@@ -117,13 +131,16 @@ export default function AboutScreen() {
       />
 
       <View style={styles.button}>
-        <Button title={editIndex !== null ? 'Update Card' : 'Add Card'} onPress={handleAddCard} />
+        <Button
+          title={editIndex !== null ? "Update Card" : "Add Card"}
+          onPress={handleAddCard}
+        />
       </View>
 
       <FlatList
         data={cards}
         keyExtractor={(_, index) => index.toString()}
-        style={{ marginTop: 20, width: '100%' }}
+        style={{ marginTop: 20, width: "100%" }}
         renderItem={({ item, index }) => (
           <View style={styles.cardPreview}>
             <View style={{ flex: 1 }}>
@@ -131,11 +148,17 @@ export default function AboutScreen() {
               <Text style={styles.cardText}>Back: {item.back}</Text>
             </View>
             <View style={styles.cardButtons}>
-              <TouchableOpacity onPress={() => handleEdit(index)} style={styles.cardAction}>
-                <Text style={{ color: '#2196F3' }}>Edit</Text>
+              <TouchableOpacity
+                onPress={() => handleEdit(index)}
+                style={styles.cardAction}
+              >
+                <Text style={{ color: "#2196F3" }}>Edit</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleDelete(index)} style={styles.cardAction}>
-                <Text style={{ color: 'red' }}>Delete</Text>
+              <TouchableOpacity
+                onPress={() => handleDelete(index)}
+                style={styles.cardAction}
+              >
+                <Text style={{ color: "red" }}>Delete</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -143,7 +166,11 @@ export default function AboutScreen() {
       />
 
       <View style={styles.button}>
-        <Button title="Create Flashcard Set" onPress={handleCreateSet} color="#4CAF50" />
+        <Button
+          title="Create Flashcard Set"
+          onPress={handleCreateSet}
+          color="#4CAF50"
+        />
       </View>
     </View>
   );
@@ -152,20 +179,20 @@ export default function AboutScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#25292e',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    backgroundColor: "#25292e",
+    justifyContent: "flex-start",
+    alignItems: "center",
     padding: 20,
   },
   title: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 22,
     marginVertical: 20,
   },
   input: {
-    backgroundColor: '#fff',
-    color: '#000',
-    width: '80%',
+    backgroundColor: "#fff",
+    color: "#000",
+    width: "80%",
     height: 50,
     padding: 10,
     marginVertical: 8,
@@ -173,24 +200,24 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 10,
-    width: '80%',
+    width: "80%",
   },
   cardPreview: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 10,
     marginVertical: 5,
     borderRadius: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginHorizontal: 10,
   },
   cardText: {
-    color: '#000',
+    color: "#000",
     fontSize: 14,
   },
   cardButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   cardAction: {
     marginLeft: 10,
