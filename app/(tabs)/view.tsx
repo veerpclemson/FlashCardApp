@@ -27,7 +27,9 @@ export default function SetsScreen() {
     setError(null);
     try {
       console.log("Fetching flashcard sets...");
-      const res = await fetch("http://localhost:3000/api/flashcards");
+      const res = await fetch(`http://localhost:8081/api/flashcards`, {
+        method: "GET",
+      });
 
       if (!res.ok) {
         throw new Error(`API returned status ${res.status}: ${res.statusText}`);

@@ -69,17 +69,11 @@ export async function POST(req: Request) {
     )
   }
 }
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function GET(req: Request) {
   console.log("starting");
   try {
     
-    const flashcardSet = await prisma.flashcardSet.findUnique({
-      where: { id },
-      include: {
-        flashcards: true, // include the cards in the set
-      },
-    });
+    const flashcardSet = await prisma.flashcardSet.findAll();
     console.log("logged set" + flashcardSet);
 
     if (!flashcardSet) {

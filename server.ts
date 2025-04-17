@@ -6,7 +6,10 @@ const app = express();
 app.use(express.json());
 const cors = require('cors');
 app.use(cors());
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient();
 
 
 const client = new Client({
@@ -16,12 +19,24 @@ client.connect();
 
 app.get('/api/flashcards', async (req, res) => {
   try {
-    const result = await client.query('SELECT * FROM flashcards');
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error fetching flashcards:', error);
-    res.status(500).send('Internal Server Error');
-  }
+      const flashcardSet = await prisma.flashcardSet.findAll();
+      console.log("logged set" + flashcardSet);
+  
+      if (!flashcardSet) {
+        res.status(404).json({ error: 'Flashcard set not found' });
+      }
+  
+      res.status(200).json({
+        id: flashcardSet.id,
+        title: flashcardSet.title,
+        description: flashcardSet.description,
+        cards: flashcardSet.flashcards,
+      });
+    } catch (error: any) {
+      console.error('Error fetching flashcard set:', error);
+      res.status(500).json({ error: 'Internal server error' }
+       );
+    }
 });
 
 app.post('/api/flashcards', async (req, res) => {
